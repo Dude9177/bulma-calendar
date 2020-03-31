@@ -18795,12 +18795,18 @@ var datePicker = function (_EventEmitter) {
 			this.lang = this.options.lang;
 			this.format = this.options.dateFormat || 'MM/DD/YYYY';
 			this.disabledDates = Array.isArray(this.options.disabledDates) ? this.options.disabledDates : [];
-			for (var i = 0; i < this.disabledDates.length; i++) {
-				this.disabledDates[i] = __WEBPACK_IMPORTED_MODULE_2_date_fns__["format"](this.disabledDates[i], this.format, {
-					locale: this.locale
-				});
-			}
+			// for (var i = 0; i < this.disabledDates.length; i++) {
+			// 	this.disabledDates[i] = dateFns.format(this.disabledDates[i], this.format, {
+			// 		locale: this.locale
+			// 	});
+			// }
 			this.disabledWeekDays = __WEBPACK_IMPORTED_MODULE_1__utils_type__["e" /* isString */](this.options.disabledWeekDays) ? this.options.disabledWeekDays.split(',') : Array.isArray(this.options.disabledWeekDays) ? this.options.disabledWeekDays : [];
+			this.highlightedDates = Array.isArray(this.options.highlightedDates) ? this.options.highlightedDates : [];
+			// for (var j = 0; j < this.highlightedDates.length; j++) {
+			// 	this.highlightedDates[j] = dateFns.format(this.highlightedDates[j], this.format, {
+			// 		locale: this.locale
+			// 	});
+			// }
 			this.min = this.options.minDate;
 			this.max = this.options.maxDate;
 			this._date = {
@@ -18963,6 +18969,19 @@ var datePicker = function (_EventEmitter) {
 					});
 				}
 
+				var isHighlighted = false;
+				if (_this5.highlightedDates) {
+					for (var _j = 0; _j < _this5.highlightedDates.length; _j++) {
+						var _day = _this5.highlightedDates[_j];
+						if (__WEBPACK_IMPORTED_MODULE_1__utils_type__["c" /* isFunction */](_day)) {
+							_day = _day(_this5);
+						}
+						if (__WEBPACK_IMPORTED_MODULE_2_date_fns__["getTime"](theDate) == __WEBPACK_IMPORTED_MODULE_2_date_fns__["getTime"](_day)) {
+							isHighlighted = true;
+						}
+					}
+				}
+
 				return {
 					date: theDate,
 					isRange: _this5.options.isRange,
@@ -18970,6 +18989,7 @@ var datePicker = function (_EventEmitter) {
 					isStartDate: __WEBPACK_IMPORTED_MODULE_2_date_fns__["isEqual"](__WEBPACK_IMPORTED_MODULE_2_date_fns__["startOfDay"](_this5.start), theDate),
 					isEndDate: __WEBPACK_IMPORTED_MODULE_2_date_fns__["isEqual"](__WEBPACK_IMPORTED_MODULE_2_date_fns__["startOfDay"](_this5.end), theDate),
 					isDisabled: isDisabled,
+					isHighlighted: isHighlighted,
 					isThisMonth: isThisMonth,
 					isInRange: isInRange
 				};
@@ -19248,7 +19268,7 @@ var datePicker = function (_EventEmitter) {
 "use strict";
 /* harmony default export */ __webpack_exports__["a"] = (function (data) {
   return '<div class="datepicker-days">' + data.map(function (theDate) {
-    return '<div data-date="' + theDate.date.toString() + '" class="datepicker-date' + (theDate.isThisMonth ? ' is-current-month' : '') + (theDate.isDisabled ? ' is-disabled' : '') + (theDate.isRange && theDate.isInRange ? ' datepicker-range' : '') + (theDate.isStartDate ? ' datepicker-range-start' : '') + (theDate.isEndDate ? ' datepicker-range-end' : '') + '">\n      <button class="date-item' + (theDate.isToday ? ' is-today' : '') + (theDate.isStartDate ? ' is-active' : '') + '" type="button">' + theDate.date.getDate() + '</button>\n  </div>';
+    return '<div data-date="' + theDate.date.toString() + '" class="datepicker-date' + (theDate.isThisMonth ? ' is-current-month' : '') + (theDate.isDisabled ? ' is-disabled' : '') + (theDate.isHighlighted ? ' is-highlighted' : '') + (theDate.isRange && theDate.isInRange ? ' datepicker-range' : '') + (theDate.isStartDate ? ' datepicker-range-start' : '') + (theDate.isEndDate ? ' datepicker-range-end' : '') + '">\n      <button class="date-item' + (theDate.isToday ? ' is-today' : '') + (theDate.isStartDate ? ' is-active' : '') + '" type="button">' + theDate.date.getDate() + '</button>\n  </div>';
   }).join('') + '</div>';
 });
 
@@ -19313,6 +19333,7 @@ var defaultOptions = {
   maxDate: null,
   disabledDates: [],
   disabledWeekDays: undefined,
+  highlightedDates: [],
   weekStart: 0,
   dateFormat: 'MM/DD/YYYY',
   enableMonthSwitch: true,
@@ -20132,6 +20153,7 @@ var defaultOptions = {
   maxDate: null,
   disabledDates: [],
   disabledWeekDays: undefined,
+  highlightedDates: [],
   weekStart: 0,
   startTime: undefined,
   endTime: undefined,

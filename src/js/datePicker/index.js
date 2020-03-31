@@ -486,12 +486,18 @@ export default class datePicker extends EventEmitter {
 		this.lang = this.options.lang;
 		this.format = this.options.dateFormat || 'MM/DD/YYYY';
 		this.disabledDates = Array.isArray(this.options.disabledDates) ? this.options.disabledDates : [];
-		for (var i = 0; i < this.disabledDates.length; i++) {
-			this.disabledDates[i] = dateFns.format(this.disabledDates[i], this.format, {
-				locale: this.locale
-			});
-		}
+		// for (var i = 0; i < this.disabledDates.length; i++) {
+		// 	this.disabledDates[i] = dateFns.format(this.disabledDates[i], this.format, {
+		// 		locale: this.locale
+		// 	});
+		// }
 		this.disabledWeekDays = type.isString(this.options.disabledWeekDays) ? this.options.disabledWeekDays.split(',') : (Array.isArray(this.options.disabledWeekDays) ? this.options.disabledWeekDays : []);
+		this.highlightedDates = Array.isArray(this.options.highlightedDates) ? this.options.highlightedDates : [];
+		// for (var j = 0; j < this.highlightedDates.length; j++) {
+		// 	this.highlightedDates[j] = dateFns.format(this.highlightedDates[j], this.format, {
+		// 		locale: this.locale
+		// 	});
+		// }
 		this.min = this.options.minDate;
 		this.max = this.options.maxDate;
 		this._date = {
@@ -644,6 +650,19 @@ export default class datePicker extends EventEmitter {
 					});
 				}
 
+				let isHighlighted = false;
+				if (this.highlightedDates) {
+					for (let j = 0; j < this.highlightedDates.length; j++) {
+						let day = this.highlightedDates[j];
+						if (type.isFunction(day)) {
+							day = day(this);
+						}
+						if (dateFns.getTime(theDate) == dateFns.getTime(day)) {
+							isHighlighted = true;
+						}
+					}
+				}
+
 				return {
 					date: theDate,
 					isRange: this.options.isRange,
@@ -651,6 +670,7 @@ export default class datePicker extends EventEmitter {
 					isStartDate: dateFns.isEqual(dateFns.startOfDay(this.start), theDate),
 					isEndDate: dateFns.isEqual(dateFns.startOfDay(this.end), theDate),
 					isDisabled: isDisabled,
+					isHighlighted: isHighlighted,
 					isThisMonth,
 					isInRange
 				};
